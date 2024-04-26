@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
 const ArticleDetail = () => {
+    const { id } = useParams();
+
+    // useEffect(() => {
+    // }, [id]);
+
     return (
         <Layout>
             <MainContent>
