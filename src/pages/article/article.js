@@ -16,7 +16,7 @@ const ArticleDetail = () => {
                 <div style={{ height: 8 }}></div>
                 <SubTitle props location={"A1"} date={"2024.05.08"} link={"https://www.naver.com"} />
                 <div style={{ height: 24 }}></div>
-                <Content>{"- 요약1\n- 요약 2\n- 요약 3"}</Content>
+                <SummaryContent>{"- 요약1\n- 요약 2\n- 요약 3"}</SummaryContent>
                 <div style={{ height: 100 }}></div>
             </MainContent>
             <SubContent>
@@ -75,14 +75,14 @@ const SubTitle = (props) => {
 };
 
 const MainContent = styled.div`
-    width: 70%;
+    width: calc(70% - 20px);
     float: left;
     border-right: 1px solid #e5e5e5;
     padding-right: 20px;
 `;
 
 const SubContent = styled.div`
-    width: 30%;
+    width: calc(30% - 20px);
     float: right;
 `;
 
@@ -124,7 +124,7 @@ const LinkContent = styled.div`
     text-decoration: underline;
 `;
 
-const Content = (props) => {
+const SummaryContent = (props) => {
     return (
         <div style={{ maxWidth: "100%", borderRadius: "12px", background: "#f7f7f7", padding: "20px 24px" }}>
             <div>{"📝 경신의 세 줄 요약"}</div>
