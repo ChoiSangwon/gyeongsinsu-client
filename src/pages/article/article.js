@@ -14,58 +14,61 @@ const ArticleDetail = () => {
                 <div style={{ height: 40 }}></div>
                 <Title>{"제목"}</Title>
                 <div style={{ height: 8 }}></div>
-                <Date>{"2024-10-12"}</Date>
-                <div style={{ height: 40 }}></div>
-                <Content>
-                    {
-                        "스크랩한 요약본이 들어갑니다\n스크랩한 요약본이 들어갑니다\n스크랩한 요약본이 들어갑니다\n스크랩한 요약본이 들어갑니다\n스크랩한 요약본이 들어갑니다\n스크랩한 요약본이 들어갑니다\n스크랩한 요약본이 들어갑니다"
-                    }
-                </Content>
-                <div style={{ height: 40 }}></div>
-                <LinkContent onClick={() => window.open("https://www.naver.com")}>{"원문 보러 가기"}</LinkContent>
-                <div style={{ height: 60 }}></div>
-                <FeedbackTitle>경신스에 대한 피드백을 남겨주세요</FeedbackTitle>
-                <div style={{ height: 16 }}></div>
-                <FeedbackContent />
+                <SubTitle props location={"A1"} date={"2024.05.08"} link={"https://www.naver.com"} />
                 <div style={{ height: 24 }}></div>
-                <SubscribeSection />
+                <Content>{"- 요약1\n- 요약 2\n- 요약 3"}</Content>
                 <div style={{ height: 100 }}></div>
             </MainContent>
-            <SubContent></SubContent>
+            <SubContent>
+                <Title>{"메모장"}</Title>
+                <Memo />
+            </SubContent>
         </Layout>
     );
 };
 
-const SubscribeSection = () => {
-    return (
-        <div style={{ border: "1px solid #a0a096" }}>
-            <Title>{"경신스를 구독하세요"}</Title>
-            <div style={{ height: 16 }}></div>
-        </div>
-    );
+const Memo = () => {
+    return <div style={{ maxWidth: "100%" }}>{"이 기사에서 기억하고 싶은 내요응ㄹ 간단히 메모해보세요."}</div>;
 };
 
-const FeedbackContent = () => {
+const SubTitle = (props) => {
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                height: "200px",
-                padding: "16px",
-                fontSize: "20px",
-                fontWeight: "400",
-                resize: "none",
-                border: "1px solid #000000",
-                borderRadius: "8px",
-                boxSizing: "border-box",
-            }}
-        >
-            <FeedbackContentTextField />
-            <div style={{ height: 24 }}></div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <FeedbackSubmitButton>{"전송"}</FeedbackSubmitButton>
+        <div style={{ display: "flex", alignContent: "center" }}>
+            <div style={{ fontSize: 14, color: "#ADADAD" }}>{props.location}면</div>
+            <div style={{ width: 8 }}></div>
+            <div
+                style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#ECECEC",
+                }}
+            />
+            <div style={{ width: 8 }}></div>
+            <div style={{ fontSize: 14, color: "#ADADAD" }}>{props.date}</div>
+            <div style={{ width: 8 }}></div>
+            <div
+                style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#ECECEC",
+                }}
+            />
+            <div style={{ width: 8 }}></div>
+            <div
+                onClick={() => window.open(props.link)}
+                style={{
+                    fontSize: 12,
+                    color: "#6C6C6C",
+                    borderRadius: "999px",
+                    alignContent: "center",
+                    border: "1px solid #ececec",
+                    padding: "4px 8px",
+                    cursor: "pointer",
+                }}
+            >
+                {"기사 원문"}
             </div>
         </div>
     );
@@ -121,22 +124,23 @@ const LinkContent = styled.div`
     text-decoration: underline;
 `;
 
-const Date = styled.div`
-    font-size: 20px;
-`;
-
-const Content = styled.div`
-    font-size: 20px;
-    font-weight: 400;
-`;
+const Content = (props) => {
+    return (
+        <div style={{ maxWidth: "100%", borderRadius: "12px", background: "#f7f7f7", padding: "20px 24px" }}>
+            <div>{"📝 경신의 세 줄 요약"}</div>
+            <div>{props.children}</div>
+        </div>
+    );
+};
 
 const Category = styled.div`
     padding: 16px 10px;
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: 999px;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 12px;
     display: inline-block;
     font-size: 16px;
+    border: 1px solid #000000;
 `;
 
 const Title = styled.h1`
