@@ -1,8 +1,8 @@
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const ArticleDetail = () => {
-    // const { id } = useParams();
+    const { id } = useParams();
 
     // useEffect(() => {
     // }, [id]);
