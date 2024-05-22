@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import SideBar from "../../components/sidabar/sidebar";
 import CustomCalendar from "../../components/calendar/calendar";
+import { useRecoilValue } from "recoil";
+import { calendarValueState } from "../../atoms/calendarAtom";
 
 const MainContainer = styled.div`
   display: flex;
@@ -17,6 +20,7 @@ const SideBarContainer = styled.div`
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
+
 const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,6 +47,7 @@ const PostItem = styled.div`
   border-bottom: 1px solid #ccc;
   padding: 1rem 0;
   margin: 10px 0;
+  cursor: pointer;
 `;
 
 const PostItemLeft = styled.div`
@@ -76,18 +81,67 @@ const PageButton = styled.button`
   }
 `;
 
-const posts = Array.from({ length: 50 }, (_, i) => `게시글 ${i + 1}`);
-
 const PostsPerPage = 8;
 
 function Board() {
   const [currentPage, setCurrentPage] = useState(1);
+  const value = useRecoilValue(calendarValueState);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
+  const fetchData = async () => {
+    const baseUrl =
+      "https://eja3ysxk64.execute-api.ap-northeast-2.amazonaws.com/v1/news";
+    const params = {
+      path: "news",
+      date: formatDate(value),
+    };
+
+    const url = new URL(baseUrl);
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setPosts(data.body);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+  }, [value]);
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}${month}${day}`;
+  }
   const indexOfLastPost = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPost - PostsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handlePostClick = (post) => {
+    const linkParts = post.link.split("/");
+    const id = linkParts[linkParts.length - 1];
+    navigate(`/article/${id}`, { state: { post } });
+  };
 
   return (
     <MainContainer>
@@ -96,26 +150,30 @@ function Board() {
         <CustomCalendar />
       </SideBarContainer>
       <Content>
-        <MainBody>
-          <PostList>
-            {currentPosts.map((post, index) => (
-              <PostItem key={index}>
-                <PostItemLeft>A1</PostItemLeft>
-                <PostItemCenter>{post}</PostItemCenter>
-                <PostItemRight>1999.04.15</PostItemRight>
-              </PostItem>
-            ))}
-          </PostList>
-          <Pagination>
-            {Array.from({ length: Math.ceil(posts.length / PostsPerPage) }).map(
-              (_, i) => (
+        {loading ? (
+          <div>Loading</div>
+        ) : (
+          <MainBody>
+            <PostList>
+              {currentPosts.map((post, index) => (
+                <PostItem key={index} onClick={() => handlePostClick(post)}>
+                  <PostItemLeft></PostItemLeft>
+                  <PostItemCenter>{post.title}</PostItemCenter>
+                  <PostItemRight>{post.datetime}</PostItemRight>
+                </PostItem>
+              ))}
+            </PostList>
+            <Pagination>
+              {Array.from({
+                length: Math.ceil(posts.length / PostsPerPage),
+              }).map((_, i) => (
                 <PageButton key={i} onClick={() => paginate(i + 1)}>
                   {i + 1}
                 </PageButton>
-              )
-            )}
-          </Pagination>
-        </MainBody>
+              ))}
+            </Pagination>
+          </MainBody>
+        )}
       </Content>
     </MainContainer>
   );
