@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "./calender.css";
 import CustomCalendar from "../../components/calendar/calendar";
 import SideBar from "../../components/sidabar/sidebar";
+import { useSetRecoilState } from "recoil";
+import { calendarValueState } from "../../atoms/calendarAtom";
 
 const MainContainer = styled.div`
   display: flex;
@@ -48,15 +51,25 @@ const Article = styled.div`
 `;
 
 const Main = () => {
+  const navigate = useNavigate();
+  const setCalendarValue = useSetRecoilState(calendarValueState);
+
   const articles = [
-    { date: "4/17", content: "Sample Content" },
-    { date: "4/16", content: "Sample Content" },
-    { date: "4/15", content: "Sample Content" },
-    { date: "4/17", content: "Sample Content" },
-    { date: "4/16", content: "Sample Content" },
-    { date: "4/15", content: "Sample Content" },
+    { date: "2024-05-23", content: "Sample Content" },
+    { date: "2024-05-22", content: "Sample Content" },
+    { date: "2024-05-21", content: "Sample Content" },
+    { date: "2024-05-20", content: "Sample Content" },
+    { date: "2024-05-19", content: "Sample Content" },
+    { date: "2024-05-18", content: "Sample Content" },
   ];
 
+  const handleArticleClick = (date) => {
+    const selectedDate = new Date(date);
+    console.log(date);
+    console.log(selectedDate);
+    setCalendarValue(selectedDate);
+    navigate("/board");
+  };
   return (
     <MainContainer>
       <SideBarContainer>
@@ -67,7 +80,11 @@ const Main = () => {
         <MainBody>
           <ArticleList>
             {articles.map((article, index) => (
-              <Article key={index}>
+              <Article
+                key={index}
+                onClick={() => {
+                  handleArticleClick(article.date);
+                }}>
                 <h2>{article.date}</h2>
               </Article>
             ))}
