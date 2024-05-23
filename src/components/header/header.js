@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ReactComponent as LogoSvg } from "../../assets/logo.svg";
 
 const Header = () => {
   return (
@@ -6,7 +7,9 @@ const Header = () => {
       <LeftContainer>
         <HeaderItem>으리으리 이야기</HeaderItem>/<HeaderItem>경신스</HeaderItem>
       </LeftContainer>
-      <Logo>LOGO</Logo>
+      <Logo>
+        <LogoSvg />
+      </Logo>
       <SubscribeButton onClick={() => {}}>
         [서비스 이름] 구독하기
       </SubscribeButton>
