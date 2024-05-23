@@ -10,9 +10,7 @@ const Header = () => {
       <Logo>
         <LogoSvg />
       </Logo>
-      <SubscribeButton onClick={() => {}}>
-        [서비스 이름] 구독하기
-      </SubscribeButton>
+      <SubscribeButton onClick={() => {}}>[세줄 경제] 구독하기</SubscribeButton>
     </Container>
   );
 };
