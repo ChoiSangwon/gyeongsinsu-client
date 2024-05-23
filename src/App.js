@@ -4,6 +4,7 @@ import Main from "./pages/main/main";
 import ArticleDetail from "./pages/article/article";
 import Board from "./pages/board/board";
 import Header from "./components/header/header";
+import "./fonts/uhbeese.css";
 function App() {
   return (
     <div>
