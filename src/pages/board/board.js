@@ -85,14 +85,14 @@ const PostsPerPage = 8;
 
 function Board() {
   const [currentPage, setCurrentPage] = useState(1);
-  const value = useRecoilValue(calendarValueState);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isNullData, setIsNullData] = useState(false);
   const navigate = useNavigate();
+  const value = useRecoilValue(calendarValueState);
 
   const fetchData = async () => {
-    const baseUrl =
-      "https://eja3ysxk64.execute-api.ap-northeast-2.amazonaws.com/v1/news";
+    const baseUrl = `${process.env.REACT_APP_API}news`;
     const params = {
       path: "news",
       date: formatDate(value),
@@ -113,17 +113,30 @@ function Board() {
       }
 
       const data = await response.json();
+      if (data.statusCode === 500) {
+        setIsNullData(true);
+        setPosts([]);
+        return;
+      }
       setPosts(data.body);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setIsNullData(true);
+      setPosts([]);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
     setLoading(true);
+    setIsNullData(false);
     fetchData();
   }, [value]);
+  useEffect(() => {
+    setLoading(true);
+    setIsNullData(false);
+    fetchData();
+  }, []);
   function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -133,7 +146,9 @@ function Board() {
   }
   const indexOfLastPost = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPost - PostsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = Array.isArray(posts)
+    ? posts.slice(indexOfFirstPost, indexOfLastPost)
+    : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -151,7 +166,9 @@ function Board() {
       </SideBarContainer>
       <Content>
         {loading ? (
-          <div>Loading</div>
+          <h1>Loading</h1>
+        ) : isNullData ? (
+          <h1>해당 날짜의 기사가 존재하지 않습니다.</h1>
         ) : (
           <MainBody>
             <PostList>
