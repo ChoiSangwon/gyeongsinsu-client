@@ -7,9 +7,7 @@ const ArticleDetail = () => {
   const { state } = useLocation();
   const post = state?.post;
 
-  useEffect(() => {
-    console.log(state);
-  }, []);
+  useEffect(() => {}, []);
 
   if (!post) {
     return <div>Invalid post</div>;
