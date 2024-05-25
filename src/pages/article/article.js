@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -277,13 +277,40 @@ const SubTitle = ({ location, date, link }) => {
 };
 
 const Feedback = () => {
-    const handleFeedbackSubmit = () => {
-        alert("피드백이 제출되었습니다.");
+    const handleFeedbackSubmit = async (e) => {
+        e.preventDefault();
+
+        const feedback = e.target.elements.feedback.value;
+        const baseUrl = `${process.env.REACT_APP_API}feedback`;
+
+        const url = new URL(baseUrl);
+        const body = {
+            path: "feedback",
+            feedback: feedback,
+            email: "example@gmail.com",
+        };
+        Object.keys(body).forEach((key) => url.searchParams.append(key, body[key]));
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.statusCode === 500) {
+                alert("피드백 제출에 실패했습니다.");
+                return;
+            }
+            alert("피드백이 제출되었습니다.");
+        } catch (error) {
+            alert("피드백 제출에 실패했습니다.");
+        }
     };
 
     const FeedbackForm = () => {
         return (
-            <div
+            <form
                 style={{
                     width: "80%",
                     display: "flex",
@@ -292,10 +319,11 @@ const Feedback = () => {
                     padding: "20px 24px",
                     borderRadius: "12px",
                 }}
+                onSubmit={handleFeedbackSubmit}
             >
-                <FeedbackContentTextField placeholder={"답변을 원하실 경우 이메일 주소도 함께 적어주세요 :)"} />
-                <FeedbackSubmitButton onClick={handleFeedbackSubmit}>{"피드백 제출하기"}</FeedbackSubmitButton>
-            </div>
+                <FeedbackContentTextField name="feedback" placeholder={"답변을 원하실 경우 이메일 주소도 함께 적어주세요 :)"} />
+                <FeedbackSubmitButton type="submit">{"피드백 제출하기"}</FeedbackSubmitButton>
+            </form>
         );
     };
 
