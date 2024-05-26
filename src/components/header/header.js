@@ -5,7 +5,13 @@ const Header = () => {
     return (
         <Container>
             <LeftContainer>
-                <HeaderItem>으리으리 이야기</HeaderItem>/<HeaderItem>경신스</HeaderItem>
+                <HeaderItem
+                    onClick={() => {
+                        window.open("https://spectacled-goat-2e2.notion.site/d3c7e0857dc0453396aafc16f4278056?pvs=4", "_blank");
+                    }}
+                >
+                    으리으리 이야기
+                </HeaderItem>
             </LeftContainer>
             <Logo>
                 <LogoSvg
