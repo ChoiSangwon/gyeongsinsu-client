@@ -3,12 +3,13 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { RecoilRoot } from "recoil";
+import { app, analytics } from "./firebase";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <RecoilRoot>
-    <App />
-  </RecoilRoot>
+    <RecoilRoot>
+        <App />
+    </RecoilRoot>
 );
 
 // If you want to start measuring performance in your app, pass a function
