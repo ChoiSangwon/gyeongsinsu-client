@@ -10,10 +10,8 @@ const ArticleDetail = () => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     useEffect(() => {
-        if (!post) {
-            fetchData();
-        }
-    }, [post]);
+        fetchData();
+    }, []);
 
     useEffect(() => {
         if (post) {
