@@ -1,29 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { calendarValueState } from "../../atoms/calendarAtom";
 
 const ArticleDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
-    const post = state?.post;
-
-    useEffect(() => {}, []);
-
-    const selectedDate = useRecoilValue(calendarValueState);
+    const [post, setPost] = useState(state?.post);
     const [posts, setPosts] = useState([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
+    useEffect(() => {
+        if (!post) {
+            fetchData();
+        }
+    }, [post]);
+
+    useEffect(() => {
+        if (post) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.pathname = `/article/${post.link.split("/").pop()}`;
+            window.history.replaceState(null, "", currentUrl.toString());
+        }
+    }, [post]);
+
     const fetchData = async () => {
-        const year = selectedDate.getFullYear();
-        const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
-        const day = String(selectedDate.getDate()).padStart(2, "0");
+        const currentUrl = new URL(window.location.href);
+        const date = currentUrl.searchParams.get("date");
 
         const baseUrl = `${process.env.REACT_APP_API}news`;
         const params = {
             path: "news",
-            date: `${year}${month}${day}`,
+            date: date,
         };
 
         const url = new URL(baseUrl);
@@ -45,9 +52,13 @@ const ArticleDetail = () => {
                 return;
             }
             setPosts(data.body);
+            const id = window.location.pathname.split("/").pop();
+            const post = data.body.find((post) => post.link.split("/").pop() === id);
+            setPost(post);
         } catch (error) {
             alert("데이터를 가져오는데 실패했습니다.");
             setPosts([]);
+            console.error("Error fetching data:", error);
         }
     };
 
@@ -55,17 +66,10 @@ const ArticleDetail = () => {
         if (posts.length === 0) await fetchData();
 
         if (posts.length > 0) {
-            const currentIndex = posts.findIndex((post) => post.link === state.post.link);
-            if (currentIndex === -1) {
-                return;
-            }
-            const nextIndex = currentIndex + 1;
+            const nextIndex = posts.findIndex((currentPost) => currentPost.link === post.link) + 1;
             if (nextIndex < posts.length) {
                 const post = posts[nextIndex];
-                const linkParts = post.link.split("/");
-                const id = linkParts[linkParts.length - 1];
-
-                navigate(`/article/${id}`, { state: { post: post } });
+                setPost(post);
             } else {
                 alert("마지막 글입니다.");
             }
@@ -76,16 +80,10 @@ const ArticleDetail = () => {
         if (posts.length === 0) await fetchData();
 
         if (posts.length > 0) {
-            const currentIndex = posts.findIndex((post) => post.link === state.post.link);
-            if (currentIndex === -1) {
-                return;
-            }
-            const prevIndex = currentIndex - 1;
+            const prevIndex = posts.findIndex((currentPost) => currentPost.link === post.link) - 1;
             if (prevIndex >= 0) {
                 const post = posts[prevIndex];
-                const linkParts = post.link.split("/");
-                const id = linkParts[linkParts.length - 1];
-                navigate(`/article/${id}`, { state: { post: post } });
+                setPost(post);
             } else {
                 alert("첫 번째 글입니다.");
             }
@@ -118,10 +116,6 @@ const ArticleDetail = () => {
         );
     };
 
-    if (!post) {
-        return <div>Invalid post</div>;
-    }
-
     return (
         <div style={{ height: "100vh" }}>
             <Header handleArticleList={handleArticleList} handleNextArticle={handleNextArticle} handlePrevArticle={handlePrevArticle} />
@@ -134,35 +128,39 @@ const ArticleDetail = () => {
                     ))}
                 </DropdownWrapper>
             )}
-            <Layout>
-                <MainContent>
-                    <Category>{post.category}</Category>
-                    <div style={{ height: 40 }}></div>
-                    <Title>{post.title}</Title>
-                    <div style={{ height: 8 }}></div>
-                    <SubTitle
-                        props
-                        // TODO : location 데이터 받아서 보여주기
-                        location={"A1"}
-                        date={post.datetime}
-                        link={post.link}
-                    />
-                    <div style={{ height: 24 }}></div>
-                    <SummaryContent>
-                        <p>{`What: ${post.what}`}</p>
-                        <p>{`Why: ${post.why}`}</p>
-                        <p>{`How: ${post.how}`}</p>
-                    </SummaryContent>
-                    <div style={{ height: 80 }}></div>
-                    <Feedback />
-                    <div style={{ height: 80 }}></div>
-                </MainContent>
-                <Divider />
-                <SubContent>
-                    <Title>{"메모장"}</Title>
-                    <Memo />
-                </SubContent>
-            </Layout>
+            {!post ? (
+                <div>Loading...</div>
+            ) : (
+                <Layout>
+                    <MainContent>
+                        <Category>{post.category}</Category>
+                        <div style={{ height: 40 }}></div>
+                        <Title>{post.title}</Title>
+                        <div style={{ height: 8 }}></div>
+                        <SubTitle
+                            props
+                            // TODO : location 데이터 받아서 보여주기
+                            location={"A1"}
+                            date={post.datetime}
+                            link={post.link}
+                        />
+                        <div style={{ height: 24 }}></div>
+                        <SummaryContent>
+                            <p>{`What: ${post.what}`}</p>
+                            <p>{`Why: ${post.why}`}</p>
+                            <p>{`How: ${post.how}`}</p>
+                        </SummaryContent>
+                        <div style={{ height: 80 }}></div>
+                        <Feedback />
+                        <div style={{ height: 80 }}></div>
+                    </MainContent>
+                    <Divider />
+                    <SubContent>
+                        <Title>{"메모장"}</Title>
+                        <Memo />
+                    </SubContent>
+                </Layout>
+            )}
         </div>
     );
 };
