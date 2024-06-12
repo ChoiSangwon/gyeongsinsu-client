@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "./calender.css";
@@ -73,14 +73,7 @@ const Main = () => {
   const navigate = useNavigate();
   const setCalendarValue = useSetRecoilState(calendarValueState);
 
-  const articles = [
-    { date: "2024-05-23", content: "Sample Content" },
-    { date: "2024-05-22", content: "Sample Content" },
-    { date: "2024-05-21", content: "Sample Content" },
-    { date: "2024-05-20", content: "Sample Content" },
-    { date: "2024-05-19", content: "Sample Content" },
-    { date: "2024-05-18", content: "Sample Content" },
-  ];
+  const articles=["2024-05-22", "2024-05-23", "2024-05-24", "2024-05-25", "2024-05-26", "2024-05-27", "2024-05-28", "2024-05-29", "2024-05-30", "2024-05-31", "2024-06-01", "2024-06-02", "2024-06-03", "2024-06-04", "2024-06-05", "2024-06-06", "2024-06-07", "2024-06-08", "2024-06-09", "2024-06-10", "2024-06-11", "2024-06-12"]
 
   const handleArticleClick = (date) => {
     const selectedDate = new Date(date);
@@ -94,6 +87,37 @@ const Main = () => {
     const separated = date.split("-");
     return `${Number(separated[1])}월 ${Number(separated[2])}일`;
   };
+  const fetchData = async () => {
+    const baseUrl = `${process.env.REACT_APP_API}news/date`;
+    const params = {
+        path: "date",
+    };
+
+    const url = new URL(baseUrl);
+    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data)
+        if (data.statusCode === 500) {
+            return;
+        }
+        console.log(data)
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+      fetchData();
+  }, []);
 
   return (
     <MainContainer>
@@ -108,14 +132,14 @@ const Main = () => {
               <ArticleContainer
                 key={index}
                 onClick={() => {
-                  handleArticleClick(article.date);
+                  handleArticleClick(article);
                 }}>
                 <ArticleSvg />
                 <CustomText>
-                  {separateDay(article.date)}
+                  {separateDay(article)}
                   <br /> 경신스
                 </CustomText>
-                <DateText>{article.date} 경신스</DateText>
+                <DateText>{article} 경신스</DateText>
               </ArticleContainer>
             ))}
           </ArticleList>
@@ -126,3 +150,4 @@ const Main = () => {
 };
 
 export default Main;
+
