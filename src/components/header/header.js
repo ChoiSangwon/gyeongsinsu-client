@@ -1,7 +1,18 @@
+import { useState } from "react";
 import styled from "styled-components";
+import Modal from "../modal/modal";
 import { ReactComponent as LogoSvg } from "../../assets/logo.svg";
 
 const Header = () => {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleModalOpen = () => {
+      setModalOpen(true);
+    };
+  
+    const handleModalClose = () => {
+      setModalOpen(false);
+    };
     return (
         <Container>
             <LeftContainer>
@@ -21,7 +32,8 @@ const Header = () => {
                     style={{ cursor: "pointer" }}
                 />
             </Logo>
-            <SubscribeButton onClick={() => {}}>[세줄 경제] 구독하기</SubscribeButton>
+            <SubscribeButton onClick={handleModalOpen}>[세줄 경제] 구독하기</SubscribeButton>
+            <Modal isOpen={modalOpen} onClose={handleModalClose} />
         </Container>
     );
 };
