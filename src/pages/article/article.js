@@ -224,20 +224,9 @@ const Memo = () => {
     return <MemoContentTextField placeholder={"이 기사에서 기억하고 싶은 내용을 간단히 메모해보세요!"} />;
 };
 
-const SubTitle = ({ location, date, link }) => {
+const SubTitle = ({ date, link }) => {
     return (
         <div style={{ display: "flex", alignContent: "center", alignItems: "center" }}>
-            <div style={{ fontSize: 14, color: "#ADADAD" }}>{location}면</div>
-            <div style={{ width: 8 }}></div>
-            <div
-                style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: "#ECECEC",
-                }}
-            />
-            <div style={{ width: 8 }}></div>
             <div style={{ fontSize: 14, color: "#ADADAD" }}>{date}</div>
             <div style={{ width: 8 }}></div>
             <div
