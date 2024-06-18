@@ -309,7 +309,7 @@ const Feedback = () => {
 
     return (
         <div>
-            <FeedbackTitle>{"💬 이 기사에 대한 피드백을 남겨주세요!"}</FeedbackTitle>
+            <FeedbackTitle>{"💬 오늘의 세줄에 피드백을 남겨주세요!"}</FeedbackTitle>
             <div style={{ height: 16 }}></div>
             <FeedbackForm />
         </div>
