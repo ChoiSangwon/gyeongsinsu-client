@@ -53,6 +53,8 @@ const PostItem = styled.div`
 const PostItemLeft = styled.div`
     padding-left: 1rem;
     padding-right: 4rem;
+    font-weight: medium;
+    font-size: 16px;
 `;
 
 const PostItemCenter = styled.div`
@@ -68,7 +70,7 @@ const Pagination = styled.div`
     display: flex;
     justify-content: center;
 `;
-
+// isCurrentPage는 현재 페이지를 표시하기 위한 props
 const PageButton = styled.button`
     padding: 5px 10px;
     margin: 0 5px;
@@ -98,13 +100,13 @@ function Board() {
     const [loading, setLoading] = useState(false);
     const [isNullData, setIsNullData] = useState(false);
     const navigate = useNavigate();
-    const value = useRecoilValue(calendarValueState);
+    const selectedDate = useRecoilValue(calendarValueState);
 
     const fetchData = async () => {
         const baseUrl = `${process.env.REACT_APP_API}news`;
         const params = {
             path: "news",
-            date: formatDate(value),
+            date: formatDate(selectedDate),
         };
 
         const url = new URL(baseUrl);
@@ -137,8 +139,9 @@ function Board() {
     useEffect(() => {
         setLoading(true);
         setIsNullData(false);
+        setCurrentPage(1);
         fetchData();
-    }, [value]);
+    }, [selectedDate]);
 
     function formatDate(date) {
         const year = date.getFullYear();
@@ -156,7 +159,7 @@ function Board() {
     const handlePostClick = (post) => {
         const linkParts = post.link.split("/");
         const id = linkParts[linkParts.length - 1];
-        navigate(`/article/${id}?date=${formatDate(value)}`, { state: { post } });
+        navigate(`/article/${id}?date=${formatDate(selectedDate)}`, { state: { post } });
     };
 
     return (
@@ -175,7 +178,7 @@ function Board() {
                         <PostList>
                             {currentPosts.map((post, index) => (
                                 <PostItem key={index} onClick={() => handlePostClick(post)}>
-                                    <PostItemLeft></PostItemLeft>
+                                    <PostItemLeft>{post.category}</PostItemLeft>
                                     <PostItemCenter>{post.title}</PostItemCenter>
                                     <PostItemRight>{post.datetime}</PostItemRight>
                                 </PostItem>
