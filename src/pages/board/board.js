@@ -79,6 +79,15 @@ const PageButton = styled.button`
     &:hover {
         text-decoration: underline;
     }
+
+    ${(props) =>
+        props.isCurrentPage === props.children
+            ? `
+        background: #007bff;
+        color: white;
+        border-radius: 5px;
+    `
+            : null}
 `;
 
 const PostsPerPage = 8;
@@ -176,7 +185,7 @@ function Board() {
                             {Array.from({
                                 length: Math.ceil(posts.length / PostsPerPage),
                             }).map((_, i) => (
-                                <PageButton key={i} onClick={() => paginate(i + 1)}>
+                                <PageButton key={i} onClick={() => paginate(i + 1)} isCurrentPage={currentPage}>
                                     {i + 1}
                                 </PageButton>
                             ))}
