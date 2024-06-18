@@ -163,7 +163,7 @@ const Header = ({ handleArticleList, handleNextArticle, handlePrevArticle }) => 
         <div
             style={{
                 background: "#474747",
-                height: 80,
+                height: 56,
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "flex-end",
@@ -332,7 +332,7 @@ const FeedbackTitle = styled.div`
 
 const MainContent = styled.div`
     width: calc(70% - 20px);
-    padding: 120px 0;
+    padding: 60px 0;
 `;
 
 const Divider = styled.div`
@@ -380,7 +380,7 @@ const SummaryContent = styled.div`
 `;
 
 const Category = styled.div`
-    padding: 16px 10px;
+    padding: 10px 16px;
     background-color: #ffffff;
     color: #000000;
     border-radius: 12px;
