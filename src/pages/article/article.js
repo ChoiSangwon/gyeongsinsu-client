@@ -135,18 +135,13 @@ const ArticleDetail = () => {
                         <div style={{ height: 40 }}></div>
                         <Title>{post.title}</Title>
                         <div style={{ height: 8 }}></div>
-                        <SubTitle
-                            props
-                            // TODO : location 데이터 받아서 보여주기
-                            location={"A1"}
-                            date={post.datetime}
-                            link={post.link}
-                        />
+                        <SubTitle props date={post.datetime} link={post.link} />
                         <div style={{ height: 24 }}></div>
                         <SummaryContent>
+                            <p style={{ fontSize: 20, fontWeight: 600, marginTop: 0 }}>📝 세줄 경제의 세 줄 요약</p>
                             <p>{`What: ${post.what}`}</p>
                             <p>{`Why: ${post.why}`}</p>
-                            <p>{`How: ${post.how}`}</p>
+                            <p style={{ marginBottom: 0 }}>{`How: ${post.how}`}</p>
                         </SummaryContent>
                         <div style={{ height: 80 }}></div>
                         <Feedback />
