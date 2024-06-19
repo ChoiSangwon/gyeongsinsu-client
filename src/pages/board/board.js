@@ -49,6 +49,7 @@ const PostItem = styled.div`
   padding: 1rem 0;
   margin: 10px 0;
   cursor: pointer;
+  color: ${(props) => (props.isVisited ? "#888888" : "inherit")};
 `;
 
 const PostItemLeft = styled.div`
@@ -71,7 +72,7 @@ const Pagination = styled.div`
   display: flex;
   justify-content: center;
 `;
-// isCurrentPage는 현재 페이지를 표시하기 위한 props
+
 const PageButton = styled.button`
   padding: 5px 10px;
   margin: 0 5px;
@@ -161,7 +162,7 @@ function Board() {
 
   const filteredPosts = posts.filter(
     (post) =>
-      selectedCategory === "" || selectedCategory.includes(post.category)
+      selectedCategory === "" || post.category.includes(selectedCategory)
   );
 
   const currentPosts = Array.isArray(filteredPosts)
@@ -173,10 +174,17 @@ function Board() {
   const handlePostClick = (post) => {
     const linkParts = post.link.split("/");
     const id = linkParts[linkParts.length - 1];
+
+    const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    storedPosts.push(post.link);
+    localStorage.setItem("posts", JSON.stringify(storedPosts));
+
     navigate(`/article/${id}?date=${formatDate(selectedDate)}`, {
       state: { post },
     });
   };
+
+  const visitedPosts = JSON.parse(localStorage.getItem("posts")) || [];
 
   return (
     <MainContainer>
@@ -193,7 +201,10 @@ function Board() {
           <MainBody>
             <PostList>
               {currentPosts.map((post, index) => (
-                <PostItem key={index} onClick={() => handlePostClick(post)}>
+                <PostItem
+                  key={index}
+                  onClick={() => handlePostClick(post)}
+                  isVisited={visitedPosts.includes(post.link)}>
                   <PostItemLeft>{post.category}</PostItemLeft>
                   <PostItemCenter>{post.title}</PostItemCenter>
                   <PostItemRight>{post.datetime}</PostItemRight>
