@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "./calender.css";
@@ -72,31 +72,7 @@ const DateText = styled.div`
 const Main = () => {
   const navigate = useNavigate();
   const setCalendarValue = useSetRecoilState(calendarValueState);
-
-  const articles = [
-    "2024-05-22",
-    "2024-05-23",
-    "2024-05-24",
-    "2024-05-25",
-    "2024-05-26",
-    "2024-05-27",
-    "2024-05-28",
-    "2024-05-29",
-    "2024-05-30",
-    "2024-05-31",
-    "2024-06-01",
-    "2024-06-02",
-    "2024-06-03",
-    "2024-06-04",
-    "2024-06-05",
-    "2024-06-06",
-    "2024-06-07",
-    "2024-06-08",
-    "2024-06-09",
-    "2024-06-10",
-    "2024-06-11",
-    "2024-06-12",
-  ];
+  const [articles, setArticles] = useState([]);
 
   const handleArticleClick = (date) => {
     const selectedDate = new Date(date);
@@ -131,11 +107,10 @@ const Main = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       if (data.statusCode === 500) {
         return;
       }
-      console.log(data);
+      setArticles(data.body.reverse());
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -175,4 +150,3 @@ const Main = () => {
 };
 
 export default Main;
-
