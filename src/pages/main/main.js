@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "./calender.css";
 import CustomCalendar from "../../components/calendar/calendar";
-import SideBar from "../../components/sidabar/sidebar";
 import { useSetRecoilState } from "recoil";
 import { calendarValueState } from "../../atoms/calendarAtom";
 import { ReactComponent as ArticleSvg } from "../../assets/article.svg";
@@ -60,6 +59,7 @@ const ArticleContainer = styled.div`
   position: relative;
   text-align: center;
   cursor: pointer;
+  border-radius: 15px;
 `;
 
 const DateText = styled.div`
