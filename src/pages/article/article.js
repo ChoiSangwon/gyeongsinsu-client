@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -8,6 +8,7 @@ const ArticleDetail = () => {
   const [post, setPost] = useState(state?.post);
   const [posts, setPosts] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const activeItemRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -55,12 +56,21 @@ const ArticleDetail = () => {
       const id = window.location.pathname.split("/").pop();
       const post = data.body.find((post) => post.link.split("/").pop() === id);
       setPost(post);
+      document.title = `세줄경제 - ${post.title}`;
     } catch (error) {
       alert("데이터를 가져오는데 실패했습니다.");
       setPosts([]);
       console.error("Error fetching data:", error);
     }
   };
+
+  useEffect(() => {
+    if (dropdownVisible && activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        block: "center",
+      });
+    }
+  }, [dropdownVisible, posts]);
 
   const handleNextArticle = async () => {
     if (posts.length === 0) await fetchData();
@@ -114,12 +124,38 @@ const ArticleDetail = () => {
           {posts.map((postItem, index) => (
             <DropdownItem
               key={index}
+              ref={postItem.link === post?.link ? activeItemRef : null}
               isActive={postItem.link === post?.link}
-              onClick={() =>
-                navigate(`/article/${postItem.link.split("/").pop()}`, {
-                  state: { post: postItem },
-                })
-              }>
+              onClick={() => {
+                const dateString = postItem.datetime.split(" ")[0];
+                const dateParts = dateString.split(".");
+
+                const year = parseInt(dateParts[0], 10);
+                const month = parseInt(dateParts[1], 10) - 1;
+                const day = parseInt(dateParts[2], 10) + 1;
+
+                const date = new Date(year, month, day);
+
+                const formattedDate = `${date.getFullYear()}${(
+                  date.getMonth() + 1
+                )
+                  .toString()
+                  .padStart(2, "0")}${date
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")}`;
+
+                console.log(formattedDate);
+                navigate(
+                  `/article/${postItem.link
+                    .split("/")
+                    .pop()}?date=${formattedDate}`,
+                  {
+                    state: { post: postItem },
+                  }
+                );
+                window.location.reload();
+              }}>
               {postItem.title}
             </DropdownItem>
           ))}
