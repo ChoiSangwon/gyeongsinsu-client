@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import moment from "moment";
 import styled from "styled-components";
@@ -11,9 +12,13 @@ import calendarImg from "../../assets/calendar.png";
 const CalendarContainer = styled.div``;
 
 const CustomCalendar = () => {
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(true);
   const [value, setValue] = useRecoilState(calendarValueState);
+  const navigate = useNavigate();
 
+  const handleButtonClick = () => {
+    navigate("/board");
+  };
   return (
     <>
       <CategoryButton onClick={() => setShowCalendar(!showCalendar)}>
@@ -23,7 +28,11 @@ const CustomCalendar = () => {
       {showCalendar && (
         <CalendarContainer>
           <Calendar
-            onChange={setValue}
+            onclick={handleButtonClick}
+            onChange={(e) => {
+              setValue(e);
+              navigate("/board");
+            }}
             value={value}
             formatDay={(locale, date) => moment(date).format("D")}
             formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
