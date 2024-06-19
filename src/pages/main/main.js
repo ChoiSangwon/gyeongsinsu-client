@@ -76,8 +76,6 @@ const Main = () => {
 
   const handleArticleClick = (date) => {
     const selectedDate = new Date(date);
-    console.log(date);
-    console.log(selectedDate);
     setCalendarValue(selectedDate);
     navigate("/board");
   };
@@ -122,7 +120,6 @@ const Main = () => {
   return (
     <MainContainer>
       <SideBarContainer>
-        <SideBar />
         <CustomCalendar />
       </SideBarContainer>
       <Content>
