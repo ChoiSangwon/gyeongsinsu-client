@@ -3,6 +3,8 @@ import { useRecoilState } from "recoil";
 import { activeCategoryState } from "../../atoms/activeCategoryState";
 import styled from "styled-components";
 import { ReactComponent as ChevronBottom } from "../../assets/chevron-bottom.svg";
+import { ReactComponent as ChevronTop } from "../../assets/chevron-top.svg";
+import categoryImg from "../../assets/category.png";
 
 const NavItem = styled.div`
   padding: 15px 10px;
@@ -32,6 +34,7 @@ const SideBar = () => {
   const [activeCategory, setActiveCategory] =
     useRecoilState(activeCategoryState);
   const [showCategories, setShowCategories] = useState(false);
+
   const categories = [
     "오늘의 경제",
     "정치",
@@ -45,7 +48,8 @@ const SideBar = () => {
   return (
     <>
       <CategoryButton onClick={() => setShowCategories(!showCategories)}>
-        카테고리 <ChevronBottom />
+        <img src={categoryImg} alt="category" />
+        카테고리 {showCategories ? <ChevronTop /> : <ChevronBottom />}
       </CategoryButton>
       {showCategories &&
         categories.map((category) => (
