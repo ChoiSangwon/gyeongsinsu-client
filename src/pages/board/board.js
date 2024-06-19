@@ -162,7 +162,7 @@ function Board() {
 
   const filteredPosts = posts.filter(
     (post) =>
-      selectedCategory === "" || post.category.includes(selectedCategory)
+      selectedCategory === "" || selectedCategory.includes(post.category)
   );
 
   const currentPosts = Array.isArray(filteredPosts)
