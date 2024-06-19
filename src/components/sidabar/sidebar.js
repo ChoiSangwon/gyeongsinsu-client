@@ -35,15 +35,7 @@ const SideBar = () => {
     useRecoilState(activeCategoryState);
   const [showCategories, setShowCategories] = useState(false);
 
-  const categories = [
-    "오늘의 경제",
-    "정치",
-    "경제",
-    "사회",
-    "생활/문화",
-    "IT/과학",
-    "세계",
-  ];
+  const categories = ["정치", "경제", "사회", "생활/문화", "IT/과학", "세계"];
 
   return (
     <>
