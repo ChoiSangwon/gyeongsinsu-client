@@ -254,14 +254,14 @@ const Feedback = () => {
 
     const url = new URL(baseUrl);
     const body = {
-      path: "feedback",
+      path: "/feedback",
       feedback: feedback,
       email: "example@gmail.com",
     };
-    Object.keys(body).forEach((key) => url.searchParams.append(key, body[key]));
     try {
       const response = await fetch(url, {
         method: "POST",
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
