@@ -11,7 +11,7 @@ import calendarImg from "../../assets/calendar.png";
 
 const CalendarContainer = styled.div``;
 
-const CustomCalendar = () => {
+const CustomCalendar = ({ isMobile }) => {
   const [showCalendar, setShowCalendar] = useState(true);
   const [value, setValue] = useRecoilState(calendarValueState);
   const navigate = useNavigate();
@@ -19,6 +19,29 @@ const CustomCalendar = () => {
   const handleButtonClick = () => {
     navigate("/board");
   };
+
+  if (isMobile) {
+    return (
+      <CalendarContainer>
+        <Calendar
+          onClick={handleButtonClick}
+          onChange={(e) => {
+            setValue(e);
+            navigate("/board");
+          }}
+          value={value}
+          formatDay={(locale, date) => moment(date).format("D")}
+          formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
+          calendarType="US"
+          showNeighboringMonth={false}
+          next2Label={null}
+          prev2Label={null}
+          minDetail="year"
+        />
+      </CalendarContainer>
+    );
+  }
+
   return (
     <>
       <CategoryButton onClick={() => setShowCalendar(!showCalendar)}>
@@ -28,7 +51,7 @@ const CustomCalendar = () => {
       {showCalendar && (
         <CalendarContainer>
           <Calendar
-            onclick={handleButtonClick}
+            onClick={handleButtonClick}
             onChange={(e) => {
               setValue(e);
               navigate("/board");
