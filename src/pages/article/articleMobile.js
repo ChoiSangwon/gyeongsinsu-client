@@ -102,10 +102,6 @@ const MobileArticleDetail = () => {
 
     return (
       <DropdownContainer>
-        <DropdownHeader>
-          <div style={{ fontSize: 14, color: "#ffffff", fontWeight: "bold" }}>목록</div>
-          <CloseButton onClick={handleCloseDropdown}>닫기</CloseButton>
-        </DropdownHeader>
         <Dropdown>
           {posts.map((postItem, index) => (
             <DropdownItem
@@ -137,6 +133,10 @@ const MobileArticleDetail = () => {
             </DropdownItem>
           ))}
         </Dropdown>
+        <DropdownHeader>
+          <div style={{ fontSize: 12, color: "#ffffff", fontWeight: "600" }}>목록</div>
+          <CloseButton onClick={handleCloseDropdown}>닫기</CloseButton>
+        </DropdownHeader>
       </DropdownContainer>
     );
   };
@@ -397,8 +397,9 @@ const Footer = ({ handleArticleList, handlePrevArticle, handleNextArticle }) => 
 const Dropdown = styled.div`
   background: white;
   border: 1px solid #ccc;
-  border-radius: 0px 0px 4px 4px;
-  max-height: 400px;
+  border-radius: 4px 4px 0px 0px;
+  max-height: 200px;
+  max-width: 200px;
   overflow-y: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -415,12 +416,12 @@ const DropdownItem = styled.div`
 `;
 
 const DropdownContainer = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 40px;
   right: 20px;
   background: white;
   border-radius: 4px;
-  width: 300px;
+  width: 200px;
   max-height: 500px;
   overflow-y: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -434,7 +435,8 @@ const DropdownHeader = styled.div`
   padding: 10px;
   border-bottom: 1px solid #ccc;
   background: #868686;
-  border-radius: 4px 4px 0px 0px;
+  border-radius: 0px 0px 4px 4px;
+  max-width: 200px;
 `;
 
 const CloseButton = styled.div`
