@@ -32,7 +32,7 @@ const HeaderText = styled.h2`
 const CustomText = styled.div`
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 20px;
   color: white;
   font-family: "UhBeeSe_hyun", sans-serif;
   font-weight: bold;
