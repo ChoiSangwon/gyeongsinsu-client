@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const ArticleDetail = () => {
+const MobileArticleDetail = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [post, setPost] = useState(state?.post);
@@ -62,14 +62,6 @@ const ArticleDetail = () => {
     }
   };
 
-  useEffect(() => {
-    if (dropdownVisible && activeItemRef.current) {
-      activeItemRef.current.scrollIntoView({
-        block: "center",
-      });
-    }
-  }, [dropdownVisible, posts]);
-
   const handleNextArticle = async () => {
     if (posts.length === 0) await fetchData();
 
@@ -119,7 +111,7 @@ const ArticleDetail = () => {
             <DropdownItem
               key={index}
               ref={postItem.link === post?.link ? activeItemRef : null}
-              isActive={postItem.link === post?.link}
+              isactive={postItem.link === post?.link}
               onClick={() => {
                 const dateString = postItem.datetime.split(" ")[0];
                 const dateParts = dateString.split(".");
@@ -151,7 +143,6 @@ const ArticleDetail = () => {
 
   return (
     <div style={{ height: "100vh" }}>
-      <Header handleArticleList={handleArticleList} handleNextArticle={handleNextArticle} handlePrevArticle={handlePrevArticle} />
       {dropdownVisible && (
         <DropdownWrapper>
           {posts.map((post, index) => (
@@ -171,100 +162,49 @@ const ArticleDetail = () => {
       {!post ? (
         <div>Loading...</div>
       ) : (
-        <Layout>
-          <MainContent>
+        <>
+          <Layout>
             <Category>{post.category}</Category>
-            <div style={{ height: 40 }}></div>
+            <div style={{ height: 24 }} />
             <Title>{post.title}</Title>
-            <div style={{ height: 8 }}></div>
-            <SubTitle props date={post.datetime} link={post.link} />
-            <div style={{ height: 24 }}></div>
+            <div style={{ height: 8 }} />
+            <SubTitle date={post.datetime} link={post.link} />
+            <div style={{ height: 24 }} />
             <SummaryContent>
               <p style={{ fontSize: 20, fontWeight: 600, marginTop: 0 }}>📝 세줄 경제의 세 줄 요약</p>
               <p>{`What: ${post.what}`}</p>
               <p>{`Why: ${post.why}`}</p>
               <p style={{ marginBottom: 0 }}>{`How: ${post.how}`}</p>
             </SummaryContent>
-            <div style={{ height: 80 }}></div>
+            <div style={{ height: 44 }} />
             <Feedback />
-            <div style={{ height: 80 }}></div>
-          </MainContent>
-          <Divider />
-          <SubContent>
-            <Title>{"메모장"}</Title>
-            <Memo />
-          </SubContent>
-        </Layout>
+            <div style={{ height: 60 }} />
+          </Layout>
+        </>
       )}
+      <Footer handleArticleList={handleArticleList} handlePrevArticle={handlePrevArticle} handleNextArticle={handleNextArticle} />
     </div>
   );
 };
 
-const Header = ({ handleArticleList, handleNextArticle, handlePrevArticle }) => {
-  return (
-    <div
-      style={{
-        background: "#474747",
-        height: 56,
-        alignItems: "center",
-        display: "flex",
-        justifyContent: "flex-end",
-        paddingRight: "120px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 16,
-          marginRight: 20,
-          color: "#FFFFFF",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          padding: "12px",
-        }}
-        onClick={handlePrevArticle}
-      >
-        <img src="/icons/chevron-left.svg" alt="logo" />
-        <p style={{ margin: 0 }}>{"이전글"}</p>
-      </div>
-      <div
-        style={{
-          fontSize: 16,
-          marginRight: 20,
-          color: "#FFFFFF",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          padding: "12px",
-        }}
-        onClick={handleArticleList}
-      >
-        <img src="/icons/list.svg" alt="logo" />
-        <div width="8px" height="1px" />
-        <p position="relative">{"목록"}</p>
-      </div>
-      <div
-        style={{
-          fontSize: 16,
-          marginRight: 20,
-          color: "#FFFFFF",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          padding: "12px",
-        }}
-        onClick={handleNextArticle}
-      >
-        <p style={{ margin: 0 }}>{"다음글"}</p>
-        <img src="/icons/chevron-right.svg" alt="logo" />
-      </div>
-    </div>
-  );
-};
+const Layout = styled.div`
+  padding: 20px;
+`;
 
-const Memo = () => {
-  return <MemoContentTextField placeholder={"이 기사에서 기억하고 싶은 내용을 간단히 메모해보세요!"} />;
-};
+const Category = styled.div`
+  padding: 3px 10px;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 6px;
+  display: inline-block;
+  font-size: 16px;
+  border: 1px solid #000000;
+`;
+
+const Title = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+`;
 
 const SubTitle = ({ date, link }) => {
   return (
@@ -297,6 +237,13 @@ const SubTitle = ({ date, link }) => {
     </div>
   );
 };
+
+const SummaryContent = styled.div`
+  max-width: 100%;
+  border-radius: 12px;
+  background: #f7f7f7;
+  padding: 20px 24px;
+`;
 
 const Feedback = () => {
   const handleFeedbackSubmit = async (e) => {
@@ -331,23 +278,53 @@ const Feedback = () => {
   };
 
   const FeedbackForm = () => {
+    const FeedbackContentTextField = styled.textarea`
+      width: 100%;
+      height: 98px;
+      resize: none;
+      margin: 0;
+      border: none;
+      padding: 0;
+    `;
+
+    const FeedbackSubmitButton = styled.button`
+      background-color: #474747;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      float: right;
+    `;
+
     return (
-      <form
-        style={{
-          width: "80%",
-          display: "flex",
-          flexDirection: "row",
-          border: "1px solid #b7bfc8",
-          padding: "20px 24px",
-          borderRadius: "12px",
-        }}
-        onSubmit={handleFeedbackSubmit}
-      >
-        <FeedbackContentTextField name="feedback" placeholder={"답변을 원하실 경우 이메일 주소도 함께 적어주세요 :)"} />
-        <FeedbackSubmitButton type="submit">{"피드백 제출하기"}</FeedbackSubmitButton>
-      </form>
+      <>
+        <form
+          style={{
+            width: "100% - 40",
+            display: "flex",
+            flexDirection: "row",
+            border: "1px solid #b7bfc8",
+            padding: "20px 24px",
+            borderRadius: "12px",
+          }}
+          onSubmit={handleFeedbackSubmit}
+        >
+          <FeedbackContentTextField name="feedback" placeholder={"답변을 원하실 경우 이메일 주소도 함께 적어주세요 :)"} />
+        </form>
+        <div style={{ height: 8 }}></div>
+        <FeedbackSubmitButton type="submit">{"피드백 보내기"}</FeedbackSubmitButton>
+      </>
     );
   };
+  const FeedbackTitle = styled.div`
+    font-family: "UhBeeSe_hyun", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+  `;
 
   return (
     <div>
@@ -358,83 +335,68 @@ const Feedback = () => {
   );
 };
 
-const FeedbackSubmitButton = styled.button`
-  background-color: #ffffff;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 0;
-`;
-
-const FeedbackTitle = styled.div`
-  font-family: "UhBeeSe_hyun", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-`;
-
-const MainContent = styled.div`
-  width: calc(70% - 20px);
-  padding: 60px 0;
-`;
-
-const Divider = styled.div`
-  width: 1px;
-  margin: 0 20px;
-  color: #cbd5e1;
-  background-color: #cbd5e1;
-  display: inline-block;
-`;
-
-const SubContent = styled.div`
-  width: calc(30% - 20px);
-  padding: 120px 0;
-`;
-
-const Layout = styled.div`
-  display: flex;
-  padding: 0 120px;
-  height: calc(100% - 80px);
-`;
-
-const MemoContentTextField = styled.textarea`
-  resize: none;
-  width: 100%;
-  height: 260px;
-  border: 1px solid #cbd5e1;
-  padding: 16px;
-  margin: 0;
-  border-radius: 12px;
-`;
-
-const FeedbackContentTextField = styled.textarea`
-  width: 100%;
-  resize: none;
-  margin: 0;
-  border: none;
-  padding: 0;
-`;
-
-const SummaryContent = styled.div`
-  max-width: 100%;
-  border-radius: 12px;
-  background: #f7f7f7;
-  padding: 20px 24px;
-`;
-
-const Category = styled.div`
-  padding: 10px 16px;
-  background-color: #ffffff;
-  color: #000000;
-  border-radius: 12px;
-  display: inline-block;
-  font-size: 16px;
-  border: 1px solid #000000;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-`;
+const Footer = ({ handleArticleList, handlePrevArticle, handleNextArticle }) => {
+  return (
+    <div
+      style={{
+        background: "#474747",
+        height: 38,
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        position: "fixed",
+        bottom: 0,
+        zIndex: 998,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 14,
+          marginRight: 20,
+          color: "#FFFFFF",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          padding: "12px",
+        }}
+        onClick={handlePrevArticle}
+      >
+        <img src="/icons/chevron-left.svg" alt="logo" />
+        <p style={{ margin: 0 }}>{"이전글"}</p>
+      </div>
+      <div
+        style={{
+          fontSize: 14,
+          marginRight: 20,
+          color: "#FFFFFF",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          padding: "12px",
+        }}
+        onClick={handleArticleList}
+      >
+        <img src="/icons/list.svg" alt="logo" style={{ marginRight: 8 }} />
+        <p position="relative">{"목록"}</p>
+      </div>
+      <div
+        style={{
+          fontSize: 14,
+          marginRight: 20,
+          color: "#FFFFFF",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          padding: "12px",
+        }}
+        onClick={handleNextArticle}
+      >
+        <p style={{ margin: 0 }}>{"다음글"}</p>
+        <img src="/icons/chevron-right.svg" alt="logo" />
+      </div>
+    </div>
+  );
+};
 
 const Dropdown = styled.div`
   background: white;
@@ -449,8 +411,8 @@ const Dropdown = styled.div`
 const DropdownItem = styled.div`
   padding: 10px;
   cursor: pointer;
-  font-weight: ${({ isActive }) => (isActive ? "bold" : "normal")};
-  color: ${({ isActive }) => (isActive ? "blue" : "black")};
+  font-weight: ${({ isactive }) => (isactive ? "bold" : "normal")};
+  color: ${({ isactive }) => (isactive ? "blue" : "black")};
   &:hover {
     background: #f0f0f0;
   }
@@ -458,8 +420,8 @@ const DropdownItem = styled.div`
 
 const DropdownContainer = styled.div`
   position: absolute;
-  top: 130px;
-  right: 120px;
+  bottom: 40px;
+  right: 20px;
   background: white;
   border-radius: 4px;
   width: 300px;
@@ -486,4 +448,4 @@ const CloseButton = styled.div`
   cursor: pointer;
 `;
 
-export default ArticleDetail;
+export default MobileArticleDetail;
