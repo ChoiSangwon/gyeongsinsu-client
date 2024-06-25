@@ -8,6 +8,7 @@ import Header from "./components/header/header";
 import "./fonts/uhbeese.css";
 import MobileMain from "./pages/main/mainMobile";
 import MobileBoard from "./pages/board/boardMobile";
+import MobileArticleDetail from "./pages/article/articleMobile";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -28,11 +29,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={isMobile ? <MobileMain /> : <Main />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
-          <Route
-            path="/board"
-            element={isMobile ? <MobileBoard /> : <Board />}
-          />
+          <Route path="/article/:id" element={isMobile ? <MobileArticleDetail /> : <ArticleDetail />} />
+          <Route path="/board" element={isMobile ? <MobileBoard /> : <Board />} />
         </Routes>
       </Router>
     </div>
