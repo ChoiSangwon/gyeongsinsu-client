@@ -77,8 +77,8 @@ const ArticleContainer = styled.div`
 
 const DateText = styled.div`
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: 20px;
+  left: 20px;
   font-size: 14px;
 `;
 
