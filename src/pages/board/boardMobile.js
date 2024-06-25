@@ -1,33 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import SideBar from "../../components/sidabar/sidebar";
 import CustomCalendar from "../../components/calendar/calendar";
 import { useRecoilValue } from "recoil";
 import { calendarValueState } from "../../atoms/calendarAtom";
 import { activeCategoryState } from "../../atoms/activeCategoryState";
+import { ReactComponent as CalendarIcon } from "../../assets/calendar-mobile.svg";
+import SidebarMobile from "../../components/sidabar/sidebarMobile";
 
 const MainContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 20px;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
 `;
 
-const SideBarContainer = styled.div`
-  width: 200px;
+const Header = styled.div`
   display: flex;
-  flex-direction: column;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+`;
+
+const DateText = styled.h2`
+  font-size: 24px;
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-grow: 1;
-  padding-left: 20px;
+  width: 100%;
 `;
 
 const MainBody = styled.div`
@@ -38,13 +43,12 @@ const MainBody = styled.div`
 `;
 
 const PostList = styled.div`
-  width: 80%;
+  width: 90%;
   margin: auto;
 `;
 
 const PostItem = styled.div`
   display: flex;
-  justify-content: space-between;
   border-bottom: 1px solid #ccc;
   padding: 1rem 0;
   margin: 10px 0;
@@ -53,24 +57,23 @@ const PostItem = styled.div`
 `;
 
 const PostItemLeft = styled.div`
+  flex-shrink: 0;
+  width: 60px;
   padding-left: 1rem;
-  padding-right: 4rem;
   font-weight: medium;
   font-size: 16px;
 `;
 
 const PostItemCenter = styled.div`
   flex-grow: 1;
-  justify-content: start;
-`;
-
-const PostItemRight = styled.div`
-  color: rgba(173, 173, 173, 1);
+  word-break: break-word;
+  padding-right: 1rem;
 `;
 
 const Pagination = styled.div`
   display: flex;
   justify-content: center;
+  margin: 20px 0;
 `;
 
 const PageButton = styled.button`
@@ -85,18 +88,54 @@ const PageButton = styled.button`
   }
 
   ${(props) =>
-    props.isCurrentPage === props.children
+    props.disabled
+      ? `
+        color: grey;
+        cursor: not-allowed;
+      `
+      : null}
+
+  ${(props) =>
+    props.isCurrentPage
       ? `
         background: #007bff;
         color: white;
         border-radius: 5px;
-    `
+      `
       : null}
+`;
+
+const PageInfo = styled.span`
+  font-size: 16px;
+  color: #666666;
+`;
+
+const DropdownContainer = styled.div`
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  z-index: 10;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  display: ${(props) => (props.isVisible ? "block" : "none")};
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: ${(props) => (props.isVisible ? "block" : "none")};
+  z-index: 5;
 `;
 
 const PostsPerPage = 8;
 
-function Board() {
+function MobileBoard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -104,6 +143,8 @@ function Board() {
   const navigate = useNavigate();
   const selectedDate = useRecoilValue(calendarValueState);
   const selectedCategory = useRecoilValue(activeCategoryState);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
 
   const fetchData = async () => {
     const baseUrl = `${process.env.REACT_APP_API}news`;
@@ -157,6 +198,14 @@ function Board() {
     return `${year}${month}${day}`;
   }
 
+  function formatStringDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}.${month}.${day}`;
+  }
+
   const indexOfLastPost = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPost - PostsPerPage;
 
@@ -185,13 +234,43 @@ function Board() {
   };
 
   const visitedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+  const totalPages = Math.ceil(filteredPosts.length / PostsPerPage);
+
+  const handleDropdownToggle = (e) => {
+    e.stopPropagation();
+    setIsDropdownVisible((prev) => !prev);
+  };
+
+  const handleOutsideClick = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setIsDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   return (
     <MainContainer>
-      <SideBarContainer>
-        <SideBar />
-        <CustomCalendar isMobile={false} />
-      </SideBarContainer>
+      <Header>
+        <DateText>{formatStringDate(selectedDate)} 경신스</DateText>
+        <CalendarIcon
+          onClick={handleDropdownToggle}
+          style={{ cursor: "pointer" }}
+        />
+      </Header>
+      <DropdownContainer ref={dropdownRef} isVisible={isDropdownVisible}>
+        <CustomCalendar isMobile={true} />
+      </DropdownContainer>
+      <Overlay
+        isVisible={isDropdownVisible}
+        onClick={() => setIsDropdownVisible(false)}
+      />
+      <SidebarMobile />
       <Content>
         {loading ? (
           <h1>Loading</h1>
@@ -207,21 +286,25 @@ function Board() {
                   isVisited={visitedPosts.includes(post.link)}>
                   <PostItemLeft>{post.category}</PostItemLeft>
                   <PostItemCenter>{post.title}</PostItemCenter>
-                  <PostItemRight>{post.datetime}</PostItemRight>
                 </PostItem>
               ))}
             </PostList>
             <Pagination>
-              {Array.from({
-                length: Math.ceil(filteredPosts.length / PostsPerPage),
-              }).map((_, i) => (
-                <PageButton
-                  key={i}
-                  onClick={() => paginate(i + 1)}
-                  isCurrentPage={currentPage}>
-                  {i + 1}
-                </PageButton>
-              ))}
+              <PageButton
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}>
+                이전
+              </PageButton>
+              <PageInfo>
+                {currentPage} / {totalPages}
+              </PageInfo>
+              <PageButton
+                onClick={() => paginate(currentPage + 1)}
+                disabled={
+                  currentPage === Math.ceil(filteredPosts.length / PostsPerPage)
+                }>
+                다음
+              </PageButton>
             </Pagination>
           </MainBody>
         )}
@@ -230,4 +313,4 @@ function Board() {
   );
 }
 
-export default Board;
+export default MobileBoard;
