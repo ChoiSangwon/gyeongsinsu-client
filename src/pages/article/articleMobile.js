@@ -298,26 +298,22 @@ const Feedback = () => {
       font-size: 12px;
       font-weight: 500;
       float: right;
+      margin-top: 8px;
     `;
 
     return (
-      <>
-        <form
-          style={{
-            width: "100% - 40",
-            display: "flex",
-            flexDirection: "row",
-            border: "1px solid #b7bfc8",
-            padding: "20px 24px",
-            borderRadius: "12px",
-          }}
-          onSubmit={handleFeedbackSubmit}
-        >
-          <FeedbackContentTextField name="feedback" placeholder={"답변을 원하실 경우 이메일 주소도 함께 적어주세요 :)"} />
-        </form>
-        <div style={{ height: 8 }}></div>
+      <form
+        style={{
+          width: "100% - 40",
+          border: "1px solid #b7bfc8",
+          padding: "16px 16px 0px 16px",
+          borderRadius: "12px",
+        }}
+        onSubmit={handleFeedbackSubmit}
+      >
+        <FeedbackContentTextField name="feedback" placeholder={"답변을 원하실 경우 이메일 주소도 함께 적어주세요 :)"} />
         <FeedbackSubmitButton type="submit">{"피드백 보내기"}</FeedbackSubmitButton>
-      </>
+      </form>
     );
   };
   const FeedbackTitle = styled.div`
