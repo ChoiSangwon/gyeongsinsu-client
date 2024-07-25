@@ -31,12 +31,12 @@ const HeaderText = styled.h2`
 
 const CustomText = styled.div`
   position: absolute;
-  right: 10px;
-  top: 20px;
+  right: 20px;
+  top: 30px;
   color: white;
   font-family: "UhBeeSe_hyun", sans-serif;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
   text-align: right;
 `;
 
@@ -76,7 +76,7 @@ const ArticleContainer = styled.div`
 
 const DateText = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 25px;
   left: 20px;
   font-size: 14px;
 `;
