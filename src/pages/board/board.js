@@ -6,6 +6,7 @@ import CustomCalendar from "../../components/calendar/calendar";
 import { useRecoilValue } from "recoil";
 import { calendarValueState } from "../../atoms/calendarAtom";
 import { activeCategoryState } from "../../atoms/activeCategoryState";
+import SearchBar from "../../components/searchBar/searchBar";
 
 const MainContainer = styled.div`
   display: flex;
@@ -199,6 +200,7 @@ function Board() {
           <h1>해당 날짜의 기사가 존재하지 않습니다.</h1>
         ) : (
           <MainBody>
+            <SearchBar />
             <PostList>
               {currentPosts.map((post, index) => (
                 <PostItem
