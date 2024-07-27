@@ -162,6 +162,9 @@ function Board() {
     setCurrentPage(1);
     fetchData();
   }, [selectedDate]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
 
   function formatDate(date) {
     const year = date.getFullYear();
