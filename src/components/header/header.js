@@ -18,12 +18,10 @@ const Header = () => {
       <LeftContainer>
         <HeaderItem
           onClick={() => {
-            window.open(
-              "https://spectacled-goat-2e2.notion.site/d3c7e0857dc0453396aafc16f4278056?pvs=4",
-              "_blank"
-            );
-          }}>
-          으리으리 이야기
+            window.open("https://spectacled-goat-2e2.notion.site/d3c7e0857dc0453396aafc16f4278056?pvs=4", "_blank");
+          }}
+        >
+          세줄 경제 이야기
         </HeaderItem>
       </LeftContainer>
       <Logo>
