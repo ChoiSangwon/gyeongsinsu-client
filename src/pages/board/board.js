@@ -6,6 +6,14 @@ import CustomCalendar from "../../components/calendar/calendar";
 import { useRecoilValue } from "recoil";
 import { calendarValueState } from "../../atoms/calendarAtom";
 import { activeCategoryState } from "../../atoms/activeCategoryState";
+import { ReactComponent as RightButton } from "../../assets/pagenation/right.svg";
+import { ReactComponent as RightEndButton } from "../../assets/pagenation/right-end.svg";
+import { ReactComponent as LeftButton } from "../../assets/pagenation/left.svg";
+import { ReactComponent as LeftEndButton } from "../../assets/pagenation/left-end.svg";
+import { ReactComponent as RightBlackButton } from "../../assets/pagenation/right-black.svg";
+import { ReactComponent as RightEndBlackButton } from "../../assets/pagenation/right-end-black.svg";
+import { ReactComponent as LeftBlackButton } from "../../assets/pagenation/left-black.svg";
+import { ReactComponent as LeftEndBlackButton } from "../../assets/pagenation/left-end-black.svg";
 import SearchBar from "../../components/searchBar/searchBar";
 
 const MainContainer = styled.div`
@@ -72,6 +80,8 @@ const PostItemRight = styled.div`
 const Pagination = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 `;
 
 const PageButton = styled.button`
@@ -80,13 +90,15 @@ const PageButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+  width: 40px;
+  text-align: center;
 
   &:hover {
     text-decoration: underline;
   }
 
   ${(props) =>
-    props.isCurrentPage === props.children
+    props.isCurrentPage
       ? `
         background: #007bff;
         color: white;
@@ -96,6 +108,7 @@ const PageButton = styled.button`
 `;
 
 const PostsPerPage = 8;
+const PageGroupSize = 5;
 
 function Board() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -187,6 +200,11 @@ function Board() {
 
   const visitedPosts = JSON.parse(localStorage.getItem("posts")) || [];
 
+  const totalPages = Math.ceil(filteredPosts.length / PostsPerPage);
+  const currentGroup = Math.ceil(currentPage / PageGroupSize);
+  const startPage = (currentGroup - 1) * PageGroupSize + 1;
+  const endPage = Math.min(currentGroup * PageGroupSize, totalPages);
+
   return (
     <MainContainer>
       <SideBarContainer>
@@ -214,16 +232,50 @@ function Board() {
               ))}
             </PostList>
             <Pagination>
-              {Array.from({
-                length: Math.ceil(filteredPosts.length / PostsPerPage),
-              }).map((_, i) => (
+              <PageButton
+                onClick={() => {
+                  paginate(1);
+                }}>
+                {currentPage === 1 ? <LeftEndButton /> : <LeftEndBlackButton />}
+              </PageButton>
+              <PageButton
+                onClick={() => {
+                  if (currentPage > 1) paginate(currentPage - 1);
+                }}>
+                {currentPage === 1 ? <LeftButton /> : <LeftBlackButton />}
+              </PageButton>
+              {Array.from(
+                { length: endPage - startPage + 1 },
+                (_, i) => startPage + i
+              ).map((pageNumber) => (
                 <PageButton
-                  key={i}
-                  onClick={() => paginate(i + 1)}
-                  isCurrentPage={currentPage}>
-                  {i + 1}
+                  key={pageNumber}
+                  onClick={() => paginate(pageNumber)}
+                  isCurrentPage={currentPage === pageNumber}>
+                  {pageNumber}
                 </PageButton>
               ))}
+
+              <PageButton
+                onClick={() => {
+                  if (currentPage < totalPages) paginate(currentPage + 1);
+                }}>
+                {currentPage === totalPages ? (
+                  <RightButton />
+                ) : (
+                  <RightBlackButton />
+                )}
+              </PageButton>
+              <PageButton
+                onClick={() => {
+                  paginate(totalPages);
+                }}>
+                {currentPage === totalPages ? (
+                  <RightEndButton />
+                ) : (
+                  <RightEndBlackButton />
+                )}
+              </PageButton>
             </Pagination>
           </MainBody>
         )}
