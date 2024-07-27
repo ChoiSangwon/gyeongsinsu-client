@@ -49,6 +49,7 @@ const MainBody = styled.div`
 const PostList = styled.div`
   width: 80%;
   margin: auto;
+  min-height: 514px;
 `;
 
 const PostItem = styled.div`
