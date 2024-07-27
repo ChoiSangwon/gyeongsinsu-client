@@ -7,6 +7,10 @@ import { calendarValueState } from "../../atoms/calendarAtom";
 import { activeCategoryState } from "../../atoms/activeCategoryState";
 import { ReactComponent as CalendarIcon } from "../../assets/calendar-mobile.svg";
 import SidebarMobile from "../../components/sidabar/sidebarMobile";
+import { ReactComponent as RightButton } from "../../assets/pagenation/right.svg";
+import { ReactComponent as LeftButton } from "../../assets/pagenation/left.svg";
+import { ReactComponent as RightBlackButton } from "../../assets/pagenation/right-black.svg";
+import { ReactComponent as LeftBlackButton } from "../../assets/pagenation/left-black.svg";
 
 const MainContainer = styled.div`
   display: flex;
@@ -76,7 +80,7 @@ const Pagination = styled.div`
   margin: 20px 0;
 `;
 
-const PageButton = styled.button`
+const PageButton = styled.div`
   padding: 5px 10px;
   margin: 0 5px;
   background: none;
@@ -290,10 +294,8 @@ function MobileBoard() {
               ))}
             </PostList>
             <Pagination>
-              <PageButton
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}>
-                이전
+              <PageButton onClick={() => paginate(currentPage - 1)}>
+                {currentPage === 1 ? <LeftButton /> : <LeftBlackButton />}
               </PageButton>
               <PageInfo>
                 {currentPage} / {totalPages}
@@ -303,7 +305,12 @@ function MobileBoard() {
                 disabled={
                   currentPage === Math.ceil(filteredPosts.length / PostsPerPage)
                 }>
-                다음
+                {currentPage ===
+                Math.ceil(filteredPosts.length / PostsPerPage) ? (
+                  <RightButton />
+                ) : (
+                  <RightBlackButton />
+                )}
               </PageButton>
             </Pagination>
           </MainBody>
