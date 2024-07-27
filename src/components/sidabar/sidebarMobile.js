@@ -7,7 +7,6 @@ const NavContainer = styled.div`
   display: flex;
   overflow-x: auto;
   padding: 10px 0;
-  background-color: #f5f5f5;
 `;
 
 const NavItem = styled.div`
@@ -16,12 +15,9 @@ const NavItem = styled.div`
   margin: 0 5px;
   font-size: 14px;
   cursor: pointer;
-  color: ${(props) => (props.active ? "black" : "rgba(173, 173, 173, 1)")};
-  background-color: ${(props) => (props.active ? "#e0e0e0" : "white")};
-  border-radius: 20px;
-  &:hover {
-    background: #c0c0c0;
-  }
+  color: ${(props) => (props.active ? "white" : "111928")};
+  background-color: ${(props) => (props.active ? "#474747" : "white")};
+  border-radius: 15px;
 `;
 
 const SideBar = () => {
