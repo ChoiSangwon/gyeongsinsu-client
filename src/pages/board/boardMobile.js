@@ -11,6 +11,7 @@ import { ReactComponent as RightButton } from "../../assets/pagenation/right.svg
 import { ReactComponent as LeftButton } from "../../assets/pagenation/left.svg";
 import { ReactComponent as RightBlackButton } from "../../assets/pagenation/right-black.svg";
 import { ReactComponent as LeftBlackButton } from "../../assets/pagenation/left-black.svg";
+import SearchBarMobile from "../../components/searchBar/searchBarMobile";
 
 const MainContainer = styled.div`
   display: flex;
@@ -78,11 +79,14 @@ const Pagination = styled.div`
   display: flex;
   justify-content: center;
   margin: 20px 0;
+  /* center */
+  align-items: center;
 `;
 
 const PageButton = styled.div`
   padding: 5px 10px;
   margin: 0 5px;
+  height: 24px;
   background: none;
   border: none;
   cursor: pointer;
@@ -109,9 +113,16 @@ const PageButton = styled.div`
       : null}
 `;
 
-const PageInfo = styled.span`
+const CurrentPageInfo = styled.span`
   font-size: 16px;
   color: #666666;
+  font-weight: 600;
+`;
+
+const TotalPageInfo = styled.span`
+  font-size: 16px;
+  color: #b2b2b2;
+  font-weight: 400;
 `;
 
 const DropdownContainer = styled.div`
@@ -216,7 +227,15 @@ function MobileBoard() {
   const indexOfLastPost = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPost - PostsPerPage;
 
-  const filteredPosts = posts.filter((post) => selectedCategory === "전체" || selectedCategory.includes(post.category));
+  const [keyword, setKeyword] = useState("");
+
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  useEffect(() => {
+    setFilteredPosts(
+      posts.filter((post) => selectedCategory === "전체" || selectedCategory.includes(post.category)).filter((post) => post.title.includes(keyword))
+    );
+  }, [posts, selectedCategory, keyword]);
 
   const currentPosts = Array.isArray(filteredPosts) ? filteredPosts.slice(indexOfFirstPost, indexOfLastPost) : [];
 
@@ -256,6 +275,10 @@ function MobileBoard() {
     };
   }, []);
 
+  const onChangeField = (e) => {
+    setKeyword(e.target.value);
+  };
+
   return (
     <MainContainer>
       <Header>
@@ -273,25 +296,36 @@ function MobileBoard() {
         ) : isNullData ? (
           <h1>해당 날짜의 기사가 존재하지 않습니다.</h1>
         ) : (
-          <MainBody>
-            <PostList>
-              {currentPosts.map((post, index) => (
-                <PostItem key={index} onClick={() => handlePostClick(post)} isVisited={visitedPosts.includes(post.link)}>
-                  <PostItemLeft>{post.category}</PostItemLeft>
-                  <PostItemCenter>{post.title}</PostItemCenter>
-                </PostItem>
-              ))}
-            </PostList>
-            <Pagination>
-              <PageButton onClick={() => paginate(currentPage - 1)}>{currentPage === 1 ? <LeftButton /> : <LeftBlackButton />}</PageButton>
-              <PageInfo>
-                {currentPage} / {totalPages}
-              </PageInfo>
-              <PageButton onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredPosts.length / PostsPerPage)}>
-                {currentPage === Math.ceil(filteredPosts.length / PostsPerPage) ? <RightButton /> : <RightBlackButton />}
-              </PageButton>
-            </Pagination>
-          </MainBody>
+          <>
+            <SearchBarMobile onChangeField={(e) => onChangeField(e)} />
+            <MainBody>
+              <PostList>
+                {currentPosts.map((post, index) => (
+                  <PostItem key={index} onClick={() => handlePostClick(post)} isVisited={visitedPosts.includes(post.link)}>
+                    <PostItemLeft>{post.category}</PostItemLeft>
+                    <PostItemCenter>{post.title}</PostItemCenter>
+                  </PostItem>
+                ))}
+              </PostList>
+              <Pagination>
+                <PageButton onClick={() => paginate(currentPage - 1)}>
+                  {currentPage === 1 ? <LeftButton width={24} height={24} /> : <LeftBlackButton width={24} height={24} />}
+                </PageButton>
+                <>
+                  <CurrentPageInfo>{`${currentPage}`} </CurrentPageInfo>
+                  <span>&nbsp;</span>
+                  <TotalPageInfo>{` / ${totalPages}`}</TotalPageInfo>
+                </>
+                <PageButton onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredPosts.length / PostsPerPage)}>
+                  {currentPage === Math.ceil(filteredPosts.length / PostsPerPage) ? (
+                    <RightButton width={24} height={24} />
+                  ) : (
+                    <RightBlackButton width={24} height={24} />
+                  )}
+                </PageButton>
+              </Pagination>
+            </MainBody>
+          </>
         )}
       </Content>
     </MainContainer>
