@@ -112,6 +112,7 @@ const PostsPerPage = 8;
 const PageGroupSize = 5;
 
 function Board() {
+  const [keyword, setKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -128,9 +129,7 @@ function Board() {
     };
 
     const url = new URL(baseUrl);
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
+    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
 
     try {
       const response = await fetch(url, {
@@ -163,6 +162,7 @@ function Board() {
     setCurrentPage(1);
     fetchData();
   }, [selectedDate]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
@@ -178,14 +178,15 @@ function Board() {
   const indexOfLastPost = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPost - PostsPerPage;
 
-  const filteredPosts = posts.filter(
-    (post) =>
-      selectedCategory === "전체" || selectedCategory.includes(post.category)
-  );
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const currentPosts = Array.isArray(filteredPosts)
-    ? filteredPosts.slice(indexOfFirstPost, indexOfLastPost)
-    : [];
+  useEffect(() => {
+    setFilteredPosts(
+      posts.filter((post) => selectedCategory === "전체" || selectedCategory.includes(post.category)).filter((post) => post.title.includes(keyword))
+    );
+  }, [posts, selectedCategory, keyword]);
+
+  const currentPosts = Array.isArray(filteredPosts) ? filteredPosts.slice(indexOfFirstPost, indexOfLastPost) : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -200,6 +201,10 @@ function Board() {
     navigate(`/article/${id}?date=${formatDate(selectedDate)}`, {
       state: { post },
     });
+  };
+
+  const onChangeField = (e) => {
+    setKeyword(e.target.value);
   };
 
   const visitedPosts = JSON.parse(localStorage.getItem("posts")) || [];
@@ -222,13 +227,10 @@ function Board() {
           <h1>해당 날짜의 기사가 존재하지 않습니다.</h1>
         ) : (
           <MainBody>
-            <SearchBar />
+            <SearchBar onChangeField={(e) => onChangeField(e)} />
             <PostList>
               {currentPosts.map((post, index) => (
-                <PostItem
-                  key={index}
-                  onClick={() => handlePostClick(post)}
-                  isVisited={visitedPosts.includes(post.link)}>
+                <PostItem key={index} onClick={() => handlePostClick(post)} isVisited={visitedPosts.includes(post.link)}>
                   <PostItemLeft>{post.category}</PostItemLeft>
                   <PostItemCenter>{post.title}</PostItemCenter>
                   <PostItemRight>{post.datetime}</PostItemRight>
@@ -239,23 +241,19 @@ function Board() {
               <PageButton
                 onClick={() => {
                   paginate(1);
-                }}>
+                }}
+              >
                 {currentPage === 1 ? <LeftEndButton /> : <LeftEndBlackButton />}
               </PageButton>
               <PageButton
                 onClick={() => {
                   if (currentPage > 1) paginate(currentPage - 1);
-                }}>
+                }}
+              >
                 {currentPage === 1 ? <LeftButton /> : <LeftBlackButton />}
               </PageButton>
-              {Array.from(
-                { length: endPage - startPage + 1 },
-                (_, i) => startPage + i
-              ).map((pageNumber) => (
-                <PageButton
-                  key={pageNumber}
-                  onClick={() => paginate(pageNumber)}
-                  isCurrentPage={currentPage === pageNumber}>
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((pageNumber) => (
+                <PageButton key={pageNumber} onClick={() => paginate(pageNumber)} isCurrentPage={currentPage === pageNumber}>
                   {pageNumber}
                 </PageButton>
               ))}
@@ -263,22 +261,16 @@ function Board() {
               <PageButton
                 onClick={() => {
                   if (currentPage < totalPages) paginate(currentPage + 1);
-                }}>
-                {currentPage === totalPages ? (
-                  <RightButton />
-                ) : (
-                  <RightBlackButton />
-                )}
+                }}
+              >
+                {currentPage === totalPages ? <RightButton /> : <RightBlackButton />}
               </PageButton>
               <PageButton
                 onClick={() => {
                   paginate(totalPages);
-                }}>
-                {currentPage === totalPages ? (
-                  <RightEndButton />
-                ) : (
-                  <RightEndBlackButton />
-                )}
+                }}
+              >
+                {currentPage === totalPages ? <RightEndButton /> : <RightEndBlackButton />}
               </PageButton>
             </Pagination>
           </MainBody>

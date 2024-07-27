@@ -26,11 +26,11 @@ const SearchBarInput = styled.input`
   }
 `;
 
-const SearchBar = () => {
+const SearchBar = ({ onChangeField }) => {
   return (
     <SearchBarContainer>
       <Glass />
-      <SearchBarInput type="text" placeholder="원하는 키워드를 검색해보세요!" />
+      <SearchBarInput type="text" placeholder="원하는 키워드를 검색해보세요!" onChange={onChangeField} />
     </SearchBarContainer>
   );
 };
