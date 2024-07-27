@@ -32,9 +32,10 @@ const Header = () => {
           style={{ cursor: "pointer" }}
         />
       </Logo>
-      <SubscribeButton onClick={handleModalOpen}>
+      {/* <SubscribeButton onClick={handleModalOpen}>
         [세줄 경제] 구독하기
-      </SubscribeButton>
+      </SubscribeButton> */}
+      <div></div>
       <Modal isOpen={modalOpen} onClose={handleModalClose} />
     </Container>
   );
