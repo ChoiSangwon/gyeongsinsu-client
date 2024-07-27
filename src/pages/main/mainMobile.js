@@ -20,7 +20,7 @@ const MobileHeader = styled.div`
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 10px;
   position: relative;
 `;
 
@@ -31,12 +31,12 @@ const HeaderText = styled.h2`
 
 const CustomText = styled.div`
   position: absolute;
-  right: 10px;
-  top: 20px;
+  right: 20px;
+  top: 30px;
   color: white;
   font-family: "UhBeeSe_hyun", sans-serif;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
   text-align: right;
 `;
 
@@ -68,7 +68,6 @@ const ArticleContainer = styled.div`
   cursor: pointer;
   border-radius: 15px;
   padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   max-width: 160px;
   width: 100%;
@@ -77,7 +76,7 @@ const ArticleContainer = styled.div`
 
 const DateText = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 25px;
   left: 20px;
   font-size: 14px;
 `;
@@ -151,9 +150,7 @@ const MobileMain = () => {
     };
 
     const url = new URL(baseUrl);
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
+    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
 
     try {
       const response = await fetch(url, {
@@ -178,18 +175,12 @@ const MobileMain = () => {
     <MainContainer>
       <MobileHeader>
         <HeaderText>날짜별 경신스</HeaderText>
-        <MCalendarSvg
-          onClick={handleDropdownToggle}
-          style={{ cursor: "pointer" }}
-        />
+        <MCalendarSvg onClick={handleDropdownToggle} style={{ cursor: "pointer" }} />
       </MobileHeader>
       <DropdownContainer ref={dropdownRef} isVisible={isDropdownVisible}>
         <CustomCalendar isMobile={true} />
       </DropdownContainer>
-      <Overlay
-        isVisible={isDropdownVisible}
-        onClick={() => setIsDropdownVisible(false)}
-      />
+      <Overlay isVisible={isDropdownVisible} onClick={() => setIsDropdownVisible(false)} />
       <Content>
         <MainBody>
           <ArticleList>
@@ -198,7 +189,8 @@ const MobileMain = () => {
                 key={index}
                 onClick={() => {
                   handleArticleClick(article);
-                }}>
+                }}
+              >
                 <MArticleSvg />
                 <CustomText>
                   {separateDay(article)}
