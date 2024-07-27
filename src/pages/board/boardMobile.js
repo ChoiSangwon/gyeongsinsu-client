@@ -158,11 +158,14 @@ function MobileBoard() {
     };
 
     const url = new URL(baseUrl);
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
+    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
 
     try {
+      if (selectedDate.getDay() === 0) {
+        setIsNullData(true);
+        setPosts([]);
+        return;
+      }
       const response = await fetch(url, {
         method: "GET",
       });
@@ -213,14 +216,9 @@ function MobileBoard() {
   const indexOfLastPost = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPost - PostsPerPage;
 
-  const filteredPosts = posts.filter(
-    (post) =>
-      selectedCategory === "전체" || selectedCategory.includes(post.category)
-  );
+  const filteredPosts = posts.filter((post) => selectedCategory === "전체" || selectedCategory.includes(post.category));
 
-  const currentPosts = Array.isArray(filteredPosts)
-    ? filteredPosts.slice(indexOfFirstPost, indexOfLastPost)
-    : [];
+  const currentPosts = Array.isArray(filteredPosts) ? filteredPosts.slice(indexOfFirstPost, indexOfLastPost) : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -262,18 +260,12 @@ function MobileBoard() {
     <MainContainer>
       <Header>
         <DateText>{formatStringDate(selectedDate)} 경신스</DateText>
-        <CalendarIcon
-          onClick={handleDropdownToggle}
-          style={{ cursor: "pointer" }}
-        />
+        <CalendarIcon onClick={handleDropdownToggle} style={{ cursor: "pointer" }} />
       </Header>
       <DropdownContainer ref={dropdownRef} isVisible={isDropdownVisible}>
         <CustomCalendar isMobile={true} />
       </DropdownContainer>
-      <Overlay
-        isVisible={isDropdownVisible}
-        onClick={() => setIsDropdownVisible(false)}
-      />
+      <Overlay isVisible={isDropdownVisible} onClick={() => setIsDropdownVisible(false)} />
       <SidebarMobile />
       <Content>
         {loading ? (
@@ -284,33 +276,19 @@ function MobileBoard() {
           <MainBody>
             <PostList>
               {currentPosts.map((post, index) => (
-                <PostItem
-                  key={index}
-                  onClick={() => handlePostClick(post)}
-                  isVisited={visitedPosts.includes(post.link)}>
+                <PostItem key={index} onClick={() => handlePostClick(post)} isVisited={visitedPosts.includes(post.link)}>
                   <PostItemLeft>{post.category}</PostItemLeft>
                   <PostItemCenter>{post.title}</PostItemCenter>
                 </PostItem>
               ))}
             </PostList>
             <Pagination>
-              <PageButton onClick={() => paginate(currentPage - 1)}>
-                {currentPage === 1 ? <LeftButton /> : <LeftBlackButton />}
-              </PageButton>
+              <PageButton onClick={() => paginate(currentPage - 1)}>{currentPage === 1 ? <LeftButton /> : <LeftBlackButton />}</PageButton>
               <PageInfo>
                 {currentPage} / {totalPages}
               </PageInfo>
-              <PageButton
-                onClick={() => paginate(currentPage + 1)}
-                disabled={
-                  currentPage === Math.ceil(filteredPosts.length / PostsPerPage)
-                }>
-                {currentPage ===
-                Math.ceil(filteredPosts.length / PostsPerPage) ? (
-                  <RightButton />
-                ) : (
-                  <RightBlackButton />
-                )}
+              <PageButton onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredPosts.length / PostsPerPage)}>
+                {currentPage === Math.ceil(filteredPosts.length / PostsPerPage) ? <RightButton /> : <RightBlackButton />}
               </PageButton>
             </Pagination>
           </MainBody>

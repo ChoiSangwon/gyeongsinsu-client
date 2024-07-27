@@ -20,7 +20,7 @@ const MobileHeader = styled.div`
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 10px;
   position: relative;
 `;
 
@@ -150,9 +150,7 @@ const MobileMain = () => {
     };
 
     const url = new URL(baseUrl);
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
+    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
 
     try {
       const response = await fetch(url, {
@@ -177,18 +175,12 @@ const MobileMain = () => {
     <MainContainer>
       <MobileHeader>
         <HeaderText>날짜별 경신스</HeaderText>
-        <MCalendarSvg
-          onClick={handleDropdownToggle}
-          style={{ cursor: "pointer" }}
-        />
+        <MCalendarSvg onClick={handleDropdownToggle} style={{ cursor: "pointer" }} />
       </MobileHeader>
       <DropdownContainer ref={dropdownRef} isVisible={isDropdownVisible}>
         <CustomCalendar isMobile={true} />
       </DropdownContainer>
-      <Overlay
-        isVisible={isDropdownVisible}
-        onClick={() => setIsDropdownVisible(false)}
-      />
+      <Overlay isVisible={isDropdownVisible} onClick={() => setIsDropdownVisible(false)} />
       <Content>
         <MainBody>
           <ArticleList>
@@ -197,7 +189,8 @@ const MobileMain = () => {
                 key={index}
                 onClick={() => {
                   handleArticleClick(article);
-                }}>
+                }}
+              >
                 <MArticleSvg />
                 <CustomText>
                   {separateDay(article)}
