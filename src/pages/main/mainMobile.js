@@ -67,7 +67,6 @@ const ArticleContainer = styled.div`
   text-align: center;
   cursor: pointer;
   border-radius: 15px;
-  padding: 10px;
   background-color: #fff;
   max-width: 160px;
   width: 100%;
