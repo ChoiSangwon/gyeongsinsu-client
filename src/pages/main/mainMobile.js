@@ -17,10 +17,10 @@ const MainContainer = styled.div`
 
 const MobileHeader = styled.div`
   display: flex;
-  width: 100%;
+  width: calc(100% - 40px);
   justify-content: space-between;
   align-items: center;
-  padding: 10px 10px;
+  padding: 10px 20px;
   position: relative;
 `;
 
@@ -190,7 +190,7 @@ const MobileMain = () => {
                   handleArticleClick(article);
                 }}
               >
-                <MArticleSvg />
+                <MArticleSvg width={'100%'} style={{ aspectRatio: 1 }} />
                 <CustomText>
                   {separateDay(article)}
                   <br /> 경신스
